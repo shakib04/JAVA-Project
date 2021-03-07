@@ -1,0 +1,44 @@
+create or replace trigger update_sal
+after update of sal on teacher
+for each row
+begin 
+insert into emp_update_sal values(emp.empno,:old.sal,:new.sal,sysdate)
+end;
+
+create table emp_update_sal(empno number(5),previous_sal number(21),new_sal number(21),up_time date)
+
+
+create or replace trigger student_modify1
+after delete  on student
+begin
+dbms_output.put_line('Delete successful');
+end;
+
+create or replace trigger student_modify2
+after update  on student
+begin
+dbms_output.put_line('updating successful');
+end;
+
+
+create or replace trigger student_modify
+after insert  on student
+begin
+dbms_output.put_line('Inserting successful');
+end;
+
+
+
+CREATE OR REPLACE TRIGGER SECURE_student
+BEFORE INSERT OR UPDATE OR DELETE ON student
+
+begin
+
+  IF TO_CHAR (SYSDATE, 'HH24:MI') NOT BETWEEN '08:40' AND '5:30'
+      OR TO_CHAR (SYSDATE, 'DAY') NOT IN ('MON','FRI')
+  THEN
+  RAISE_APPLICATION_ERROR (-20001, 
+    'You may only make changes during normal office hours.');
+  END IF;
+
+END;
